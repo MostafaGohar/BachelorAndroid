@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.mostafagohar.bachelor.CategoryActivity">
+
+    <item android:id="@+id/main_page" android:title="Main Page"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/my_profile" android:title="My Profile"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/edit_profile" android:title="@string/edit_profile"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/settings" android:title="@string/action_settings"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/logout" android:title="@string/logout"
+        android:orderInCategory="100" app:showAsAction="never" />
+
+</menu>

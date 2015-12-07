@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/background">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:id="@+id/linearLayout">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Posts"
+            android:id="@+id/postsButton"
+            android:layout_weight="0.5"
+            android:elegantTextHeight="false"
+            android:clickable="true"
+            android:background="#5A5" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Categories"
+            android:id="@+id/categoriesButton"
+            android:layout_weight="0.5"
+            android:background="#CCC" />
+    </LinearLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    android:orientation="vertical"
+    android:layout_below="@+id/linearLayout"
+    android:id="@+id/PostsLayout"
+    android:layout_alignParentBottom="false">
+
+
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/TimeLine"
+        android:headerDividersEnabled="false"
+        android:footerDividersEnabled="false"
+        android:fastScrollEnabled="true"
+        android:clickable="true" />
+
+</LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:weightSum="1"
+        android:orientation="vertical"
+        android:layout_below="@+id/linearLayout"
+        android:id="@+id/CategoriesLayout"
+        android:visibility="gone">
+
+        <ListView
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/Categories"
+            android:headerDividersEnabled="false"
+            android:footerDividersEnabled="false"
+            android:fastScrollEnabled="true"
+            android:clickable="true" />
+    </LinearLayout>
+</RelativeLayout>
