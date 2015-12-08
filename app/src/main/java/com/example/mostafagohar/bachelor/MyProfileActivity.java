@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -27,24 +28,19 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MyProfileActivity extends BaseActivity{
 
-
+    static User current_user = new User();
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -67,7 +63,6 @@ public class MyProfileActivity extends BaseActivity{
         PostActivity.setListViewHeightBasedOnChildren(profilePosts);
         PostActivity.setListViewHeightBasedOnChildren(profileFollowers);
         PostActivity.setListViewHeightBasedOnChildren(profileFollowees);
-
         RequestQueue queue = Volley.newRequestQueue(MyProfileActivity.this);
 
         String url="https://bachelor-sohaghareb.c9users.io/api/users/2";//USER INFO URL
@@ -78,7 +73,8 @@ public class MyProfileActivity extends BaseActivity{
                     String data= response.getJSONObject("user").toString();
                     Gson gson=new Gson();
                     //String json = gson.toJson(response, new TypeToken<ArrayList<Post>>() {}.getType());
-                    User user = gson.fromJson(data, User.class);
+                    final User user = gson.fromJson(data, User.class);
+                    MyProfileActivity.setUser(user);
 //                    ArrayList<Post> list = new ArrayList<>();
                     name.setText(user.getFname()+" "+user.getLname());
                     email.setText(user.getEmail());
@@ -245,6 +241,8 @@ public class MyProfileActivity extends BaseActivity{
         };
         queue.add(followees_request);
         ///////////////////
+
+
     final Button postsButton = (Button) findViewById(R.id.postsButton);
     final Button followersButton = (Button) findViewById(R.id.followersButton);
     final Button followeesButton = (Button) findViewById(R.id.followeesButton);
@@ -253,12 +251,14 @@ public class MyProfileActivity extends BaseActivity{
     postButton.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            StringBuilder sb = new StringBuilder();
-
-            String http = "https://bachelor-sohaghareb.c9users.io/api/posts/create";
             EditText c = (EditText)findViewById(R.id.postText);
-            HttpPost hp = new HttpPost();
-            hp.doInBackground(c.getText().toString());
+            new HttpPost().execute(new String[]{c.getText().toString()});
+//            StringBuilder sb = new StringBuilder();
+//
+//            String http = "https://bachelor-sohaghareb.c9users.io/api/posts/create";
+//            EditText c = (EditText)findViewById(R.id.postText);
+//            HttpPost hp = new HttpPost();
+//            hp.doInBackground(c.getText().toString());
 
 
         }});
@@ -351,74 +351,39 @@ public class MyProfileActivity extends BaseActivity{
 
     }
 
-    class HttpPost extends AsyncTask<String, Void, Void> {
-
-        private Exception exception;
-
-        StringBuilder sb = new StringBuilder();
-
-        String http = "https://bachelor-sohaghareb.c9users.io/api/posts/create";
-        HttpURLConnection urlConnection=null;
-        protected void postMethod(String content) {
-
-
-        }
-
-        @Override
-        protected Void doInBackground(String... params) {
-            try {
-                URL url = new URL(http);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setDoOutput(true);
-                urlConnection.setRequestMethod("POST");
-                urlConnection.setUseCaches(false);
-                urlConnection.setConnectTimeout(10000);
-                urlConnection.setReadTimeout(10000);
-                urlConnection.setRequestProperty("Content-Type", "application/json");
-
-                urlConnection.setRequestProperty("Host", "bachelor-sohaghareb.c9users.io");
-                urlConnection.connect();
-
-                //Create JSONObject here
-                JSONObject jsonParam = new JSONObject();
-                jsonParam.put("content", "this is the best post");
-                jsonParam.put("desttype", 0);
-                jsonParam.put("destid", 1);
-                OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
-                out.write(jsonParam.toString());
-                out.close();
-
-                int HttpResult = urlConnection.getResponseCode();
-                if (HttpResult == HttpURLConnection.HTTP_OK) {
-                    BufferedReader br = new BufferedReader(new InputStreamReader(
-                            urlConnection.getInputStream(), "utf-8"));
-                    String line = null;
-                    while ((line = br.readLine()) != null) {
-                        sb.append(line + "\n");
-                    }
-                    br.close();
-
-                    System.out.println("" + sb.toString());
-
-                } else {
-                    System.out.println(urlConnection.getResponseMessage());
-                }
-            } catch (MalformedURLException e) {
-
-                e.printStackTrace();
-            } catch (IOException e) {
-
-                e.printStackTrace();
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } finally {
-                if (urlConnection != null)
-                    urlConnection.disconnect();
-            }
-            return null;
-        }
+    public static void setUser(User user) {
+        MyProfileActivity.current_user = user;
     }
 
 
+}
+class HttpPost extends AsyncTask<String, Void, Void> {
+
+
+    @Override
+    protected Void doInBackground(String... params) {
+        try{
+            RestTemplate restTemplatePost = new RestTemplate();
+            restTemplatePost.getMessageConverters().add(new StringHttpMessageConverter());
+            StringBuilder builder = new StringBuilder();
+            for(String s : params) {
+                builder.append(s);
+            }
+
+            Post post = new Post();
+            post.setDestid(1);
+            post.setContent(builder.toString());
+            post.setDesttype(1);
+            //post.setUser(MyProfileActivity.current_user);
+            String createPostUrl = "https://bachelor-sohaghareb.c9users.io/api/posts/create";
+
+            Gson gson = new Gson();
+            String request = gson.toJson(post);
+            Log.v("HEY",request.toString());
+            restTemplatePost.postForObject(createPostUrl, request, String.class);
+        } catch(RestClientException e) {
+            Log.e("POST", e.getLocalizedMessage());
+        }
+        return null;
+    }
 }
