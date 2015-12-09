@@ -29,6 +29,9 @@ import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -65,7 +68,7 @@ public class MyProfileActivity extends BaseActivity{
         PostActivity.setListViewHeightBasedOnChildren(profileFollowees);
         RequestQueue queue = Volley.newRequestQueue(MyProfileActivity.this);
 
-        String url="https://bachelor-sohaghareb.c9users.io/api/users/2";//USER INFO URL
+        String url="https://bachelor-sohaghareb.c9users.io/api/users/1";//USER INFO URL
         JsonObjectRequest request=new JsonObjectRequest(Request.Method.GET, url, "", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -363,7 +366,9 @@ class HttpPost extends AsyncTask<String, Void, Void> {
     @Override
     protected Void doInBackground(String... params) {
         try{
+            String createPostUrl = "https://bachelor-sohaghareb.c9users.io/api/posts";
             RestTemplate restTemplatePost = new RestTemplate();
+
             restTemplatePost.getMessageConverters().add(new StringHttpMessageConverter());
             StringBuilder builder = new StringBuilder();
             for(String s : params) {
@@ -371,16 +376,21 @@ class HttpPost extends AsyncTask<String, Void, Void> {
             }
 
             Post post = new Post();
-            post.setDestid(1);
+            post.setDestid(MyProfileActivity.current_user.getId());
             post.setContent(builder.toString());
             post.setDesttype(1);
-            //post.setUser(MyProfileActivity.current_user);
-            String createPostUrl = "https://bachelor-sohaghareb.c9users.io/api/posts/create";
+            post.setUser(MyProfileActivity.current_user);
+
 
             Gson gson = new Gson();
             String request = gson.toJson(post);
-            Log.v("HEY",request.toString());
-            restTemplatePost.postForObject(createPostUrl, request, String.class);
+            Log.v("HEY", request.toString());
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<String> entity = new HttpEntity<String>(request,headers);
+            Log.v("HUA", entity.toString());
+           // restTemplatePost.put(createPostUrl, entity);
+            restTemplatePost.postForObject(createPostUrl, entity, String.class);
         } catch(RestClientException e) {
             Log.e("POST", e.getLocalizedMessage());
         }
