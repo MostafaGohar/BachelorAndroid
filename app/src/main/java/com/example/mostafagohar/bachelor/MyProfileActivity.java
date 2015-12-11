@@ -1,5 +1,6 @@
 package com.example.mostafagohar.bachelor;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -28,10 +29,12 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -44,9 +47,10 @@ import java.util.Map;
 public class MyProfileActivity extends BaseActivity{
 
     static User current_user = new User();
+    static Context context;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        context = getApplicationContext();
         setContentView(R.layout.activity_myprofile);
         final TextView email = (TextView)findViewById(R.id.ProfileEmail);
         final TextView gucid = (TextView)findViewById(R.id.ProfileGUCID);
@@ -357,25 +361,28 @@ public class MyProfileActivity extends BaseActivity{
     public static void setUser(User user) {
         MyProfileActivity.current_user = user;
     }
+    public static Context getContext(){return MyProfileActivity.context;}
 
 
 }
-class HttpPost extends AsyncTask<String, Void, Void> {
+class HttpPost extends AsyncTask<String, Void, Integer> {
 
 
     @Override
-    protected Void doInBackground(String... params) {
-        try{
+    protected Integer doInBackground(String... params) {
+        Post post = null;
+        int postid = 0;
+        try {
             String createPostUrl = "https://bachelor-sohaghareb.c9users.io/api/posts";
             RestTemplate restTemplatePost = new RestTemplate();
 
             restTemplatePost.getMessageConverters().add(new StringHttpMessageConverter());
             StringBuilder builder = new StringBuilder();
-            for(String s : params) {
+            for (String s : params) {
                 builder.append(s);
             }
 
-            Post post = new Post();
+            post = new Post();
             post.setDestid(MyProfileActivity.current_user.getId());
             post.setContent(builder.toString());
             post.setDesttype(1);
@@ -387,13 +394,34 @@ class HttpPost extends AsyncTask<String, Void, Void> {
             Log.v("HEY", request.toString());
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<String> entity = new HttpEntity<String>(request,headers);
+            HttpEntity<String> entity = new HttpEntity<String>(request, headers);
             Log.v("HUA", entity.toString());
-           // restTemplatePost.put(createPostUrl, entity);
-            restTemplatePost.postForObject(createPostUrl, entity, String.class);
-        } catch(RestClientException e) {
+            ResponseEntity<String> response = restTemplatePost.postForEntity(createPostUrl, entity, String.class);
+            String restcall = response.getBody();
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject = new JSONObject(restcall);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                postid = (int)jsonObject.get("id");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } catch (RestClientException e) {
             Log.e("POST", e.getLocalizedMessage());
         }
-        return null;
+        return postid;
     }
+    protected void onPostExecute(Integer result) {
+        Intent intent = new Intent();
+        intent.setClass(MyProfileActivity.getContext(), PostActivity.class);
+        intent.putExtra("post_id", result);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        MyProfileActivity.getContext().startActivity(intent);
+
+    }
+
 }
