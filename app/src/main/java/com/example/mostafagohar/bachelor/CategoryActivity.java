@@ -52,7 +52,7 @@ public class CategoryActivity extends BaseActivity {
 
         Intent categoryIntent= getIntent();
         Bundle b = categoryIntent.getExtras();
-        int categories_id = (int) b.get("categories_id");
+        int categories_id = (int) b.get("category_id");
 
         /////////////////////
         RequestQueue queue = Volley.newRequestQueue(CategoryActivity.this);
