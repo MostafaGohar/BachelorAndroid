@@ -12,6 +12,7 @@ public class User implements Serializable{
     String email;
     String dob;
     String gucid;
+    String uid;
     boolean doctor;
     boolean gender;
     String location;
@@ -104,5 +105,13 @@ public class User implements Serializable{
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

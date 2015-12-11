@@ -24,6 +24,7 @@ public class BaseActivity extends AppCompatActivity {
                 return true;
             case R.id.my_profile:
                 Intent profileIntent = new Intent(getApplicationContext(), MyProfileActivity.class);
+                profileIntent.putExtra("user_id", ((MyApplication) this.getApplication()).getCurrent_user());
                 startActivity(profileIntent);
                 return true;
             case R.id.settings:

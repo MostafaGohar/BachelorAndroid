@@ -47,23 +47,7 @@ public class Following extends BaseActivity {
                 startActivity(mainIntent);
             }
         });
-//        listItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//
-//            @Override
-//            public void onItemClick(AdapterView<?> adapter, View v, int position,long id) {
-//
-//                //ItemClicked item = adapter.getItem(position);
-//
-//                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-//                intent.putExtra("position", position);
-//                startActivity(intent);
-//
-//            }
-//
-//
-//        });
-//
+
 
     }
     @Override

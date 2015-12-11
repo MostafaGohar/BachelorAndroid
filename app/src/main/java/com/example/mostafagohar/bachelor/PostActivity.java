@@ -286,6 +286,7 @@ public class PostActivity extends BaseActivity {
         new_post.setUser(post.getUser());
         new_post.setContent(post.getContent());
         new_post.setCreated_at(post.getCreated_at());
+        new_post.setTitle(post.getTitle());
         return new_post;
     }
 

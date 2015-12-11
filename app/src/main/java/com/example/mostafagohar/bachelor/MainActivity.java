@@ -3,6 +3,7 @@ package com.example.mostafagohar.bachelor;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -101,6 +102,7 @@ public class MainActivity extends BaseActivity {
                     Post postData = new Post();
                     for(int i = 0;i<list.size();i++){
                         postData.setContent(list.get(i).getContent());
+                        postData.setTitle(list.get(i).getTitle());
                         postData.setCreated_at(list.get(i).getCreated_at());
                         postData.setUser(list.get(i).getUser());
                         results.add(PostActivity.clonePost(postData));

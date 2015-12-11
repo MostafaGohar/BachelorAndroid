@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,11 +43,12 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MyProfileActivity extends BaseActivity{
 
-    static User current_user = new User();
+    static User user = new User();
     static Context context;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,8 +64,13 @@ public class MyProfileActivity extends BaseActivity{
         final LinearLayout postsLayout = (LinearLayout)findViewById(R.id.PostsLayout);
         final LinearLayout followersLayout = (LinearLayout)findViewById(R.id.FollowersLayout);
         final LinearLayout followeesLayout = (LinearLayout)findViewById(R.id.FolloweesLayout);
+        final ProgressBar spinner = (ProgressBar)findViewById(R.id.progressBar1);
         Intent intent= getIntent();
         Bundle b = intent.getExtras();
+        int user_id =(int) b.get("user_id");
+        if(b.containsKey("set_current_user")){
+            ((MyApplication) getApplication()).setCurrent_user(user_id);
+        }
         final ListView profilePosts = (ListView)findViewById(R.id.ProfilePosts);
         final ListView profileFollowers = (ListView)findViewById(R.id.ProfileFollowers);
         final ListView profileFollowees = (ListView)findViewById(R.id.ProfileFollowees);
@@ -72,7 +79,7 @@ public class MyProfileActivity extends BaseActivity{
         PostActivity.setListViewHeightBasedOnChildren(profileFollowees);
         RequestQueue queue = Volley.newRequestQueue(MyProfileActivity.this);
 
-        String url="https://bachelor-sohaghareb.c9users.io/api/users/1";//USER INFO URL
+        String url="https://bachelor-sohaghareb.c9users.io/api/users/"+user_id;//USER INFO URL
         JsonObjectRequest request=new JsonObjectRequest(Request.Method.GET, url, "", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -80,8 +87,7 @@ public class MyProfileActivity extends BaseActivity{
                     String data= response.getJSONObject("user").toString();
                     Gson gson=new Gson();
                     //String json = gson.toJson(response, new TypeToken<ArrayList<Post>>() {}.getType());
-                    final User user = gson.fromJson(data, User.class);
-                    MyProfileActivity.setUser(user);
+                    user = gson.fromJson(data, User.class);
 //                    ArrayList<Post> list = new ArrayList<>();
                     name.setText(user.getFname()+" "+user.getLname());
                     email.setText(user.getEmail());
@@ -93,7 +99,7 @@ public class MyProfileActivity extends BaseActivity{
                         gender.setText("Female");
                     }
                     location.setText(user.getLocation());
-
+                    spinner.setVisibility(View.INVISIBLE);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -162,7 +168,7 @@ public class MyProfileActivity extends BaseActivity{
         };
         queue.add(posts_request);
         /////////////////
-        String followers_url="";//TIMELINE POSTS URL
+        String followers_url="";//PROFILE FOLLOWERS URL
         JsonArrayRequest followers_request=new JsonArrayRequest(Request.Method.GET, followers_url, "", new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
@@ -178,7 +184,7 @@ public class MyProfileActivity extends BaseActivity{
                     profileFollowers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
-                            Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                            Intent intent = new Intent(getApplicationContext(), MyProfileActivity.class);
                             intent.putExtra("user_id", list.get(position).getId());
                             startActivity(intent);
                         }
@@ -205,7 +211,7 @@ public class MyProfileActivity extends BaseActivity{
         };
         queue.add(followers_request);
         /////////////////
-        String followees_url="";//TIMELINE POSTS URL
+        String followees_url="";//PROFILE FOLLOWEES URL
         JsonArrayRequest followees_request=new JsonArrayRequest(Request.Method.GET, followees_url, "", new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
@@ -221,7 +227,7 @@ public class MyProfileActivity extends BaseActivity{
                     profileFollowers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
-                            Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                            Intent intent = new Intent(getApplicationContext(), MyProfileActivity.class);
                             intent.putExtra("user_id", list.get(position).getId());
                             startActivity(intent);
                         }
@@ -254,12 +260,28 @@ public class MyProfileActivity extends BaseActivity{
     final Button followersButton = (Button) findViewById(R.id.followersButton);
     final Button followeesButton = (Button) findViewById(R.id.followeesButton);
     final Button postButton = (Button)findViewById(R.id.postButton);
+    final Button followButton = (Button)findViewById(R.id.followButton);
+    if(((MyApplication) this.getApplication()).getCurrent_user() != user_id) {
 
+        followButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (followButton.getText().equals("Follow"))
+                    followButton.setText("Unfollow");
+                else
+                    followButton.setText("Follow");
+            }
+        });
+    }else{
+
+        followButton.setVisibility(View.INVISIBLE);
+    }
     postButton.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             EditText c = (EditText)findViewById(R.id.postText);
-            new HttpPost().execute(new String[]{c.getText().toString()});
+            EditText c2 = (EditText)findViewById(R.id.postTitle);
+            new HttpPost().execute(new String[]{c2.getText().toString(),c.getText().toString()});
 //            StringBuilder sb = new StringBuilder();
 //
 //            String http = "https://bachelor-sohaghareb.c9users.io/api/posts/create";
@@ -323,44 +345,8 @@ public class MyProfileActivity extends BaseActivity{
                 followeesButton.setBackgroundColor(Color.parseColor("#CCCCCC"));
             }
         }});
-
-    profileFollowers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-
-        @Override
-        public void onItemClick(AdapterView<?> adapter, View v, int position,long id) {
-
-            //ItemClicked item = adapter.getItem(position);
-
-            Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-            intent.putExtra("position", position);
-            startActivity(intent);
-
-        }
-
-    });
-    profileFollowees.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-
-        @Override
-        public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
-
-            //ItemClicked item = adapter.getItem(position);
-
-            Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-            intent.putExtra("position", position);
-            startActivity(intent);
-
-        }
-
-
-    });
-
     }
 
-    public static void setUser(User user) {
-        MyProfileActivity.current_user = user;
-    }
     public static Context getContext(){return MyProfileActivity.context;}
 
 
@@ -381,12 +367,14 @@ class HttpPost extends AsyncTask<String, Void, Integer> {
             for (String s : params) {
                 builder.append(s);
             }
+            List<String> wordList = Arrays.asList(params);
 
             post = new Post();
-            post.setDestid(MyProfileActivity.current_user.getId());
-            post.setContent(builder.toString());
+            post.setDestid(MyProfileActivity.user.getId());
+            post.setContent(wordList.get(1));
+            post.setTitle(wordList.get(0));
             post.setDesttype(1);
-            post.setUser(MyProfileActivity.current_user);
+            post.setUser(MyProfileActivity.user);
 
 
             Gson gson = new Gson();
