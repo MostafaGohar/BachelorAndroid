@@ -1,5 +1,6 @@
 package com.example.mostafagohar.bachelor;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -50,9 +51,11 @@ public class MyProfileActivity extends BaseActivity{
 
     static User user = new User();
     static Context context;
+    static Application app;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getApplicationContext();
+        app = getApplication();
         setContentView(R.layout.activity_myprofile);
         final TextView email = (TextView)findViewById(R.id.ProfileEmail);
         final TextView gucid = (TextView)findViewById(R.id.ProfileGUCID);
@@ -348,6 +351,7 @@ public class MyProfileActivity extends BaseActivity{
     }
 
     public static Context getContext(){return MyProfileActivity.context;}
+    public static Application getApp(){return MyProfileActivity.app;}
 
 
 }
@@ -374,7 +378,9 @@ class HttpPost extends AsyncTask<String, Void, Integer> {
             post.setContent(wordList.get(1));
             post.setTitle(wordList.get(0));
             post.setDesttype(1);
-            post.setUser(MyProfileActivity.user);
+            User poster = new User();
+            poster.setId(((MyApplication) MyProfileActivity.getApp()).getCurrent_user());
+            post.setUser(poster);
 
 
             Gson gson = new Gson();

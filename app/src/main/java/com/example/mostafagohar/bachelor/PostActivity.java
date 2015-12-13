@@ -1,8 +1,12 @@
 package com.example.mostafagohar.bachelor;
 
+import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,6 +15,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
@@ -29,8 +34,16 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,11 +52,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 public class PostActivity extends BaseActivity {
-
+    static int post_id;
+    static Application app;
+    static Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
+        app = getApplication();
+        context = getApplicationContext();
         Intent intent= getIntent();
         //Bundle b = intent.getExtras();
         final TextView title = (TextView) findViewById(R.id.PostTitle);
@@ -67,10 +84,19 @@ public class PostActivity extends BaseActivity {
 //        });
         Bundle b = intent.getExtras();
         //final Post j = (Post) b.get("post");
-        final int post_id = (Integer) b.get("post_id");
+        post_id = (Integer) b.get("post_id");
         final ListView lv1 = (ListView) findViewById(R.id.comment_list);
         RequestQueue queue = Volley.newRequestQueue(PostActivity.this);
 
+        final Button commentButton = (Button)findViewById(R.id.commentButton);
+        commentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText c = (EditText) findViewById(R.id.commentText);
+                new HttpPostComment().execute(new String[]{c.getText().toString()});
+
+            }
+        });
 //            title.setText(j.getTitle());
 //            text.setText(j.getContent());
 //            poster.setText("by " + j.getUser().getFname());
@@ -103,6 +129,13 @@ public class PostActivity extends BaseActivity {
                     text.setText(thepost.getContent());
                     poster.setText("by " + thepost.getUser().getFname());
                     setTitle(thepost.getTitle());
+//                    if(thepost.getDesttype() == 1){
+//
+//                    }else{
+//                        if(thepost.getDesttype() == 2){
+//
+//                        }
+//                    }
                     //String json = gson.toJson(response, new TypeToken<ArrayList<Post>>() {}.getType());
                     ArrayList < Comment > list = gson.fromJson(data, new TypeToken<ArrayList<Comment>>() {}.getType());
                     ArrayList<Object> results = new ArrayList<>();
@@ -168,61 +201,61 @@ public class PostActivity extends BaseActivity {
         //commentersList.setAdapter(new ArrayAdapter<String>(PostActivity.this, android.R.layout.simple_list_item_1, commenters));
 
         //setListViewHeightBasedOnChildren(commentersList);
-        final String[] texts={"Please ignore this it is a test post. Please ignore this it is a test post. " +
-                "Please ignore this it is a test post. Please ignore this it is a test post. Please ignore this it is a test post." +
-                " Please ignore this it is a test post. Please ignore this it is a test post.",
-                "Please ignore this it is a test post. Please ignore this it is a test post. " +
-                "Please ignore this it is a test post. Please ignore this it is a test post. Please ignore this it is a test post." +
-                " Please ignore this it is a test post. Please ignore this it is a test post.",
-                "Whoever made this app knows nothing about design, this is absolutely horrible. I can design better apps in my sleep.",
-                "Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello " +
-                        "Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello ",
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
-                        "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." +
-                        " Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. ",
-                "Please ignore this it is a test post. Please ignore this it is a test post. " +
-                        "Please ignore this it is a test post. Please ignore this it is a test post. Please ignore this it is a test post." +
-                        " Please ignore this it is a test post. Please ignore this it is a test post.",
-                "Please ignore this it is a test post. Please ignore this it is a test post. " +
-                        "Please ignore this it is a test post. Please ignore this it is a test post. Please ignore this it is a test post." +
-                        " Please ignore this it is a test post. Please ignore this it is a test post.",
-                "Whoever made this app knows nothing about design, this is absolutely horrible. I can design better apps in my sleep.",
-                "Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello " +
-                        "Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello ",
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
-                        "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." +
-                        " Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. " +
-                        "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."+
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
-                        "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." +
-                        " Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. " +
-                        "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."};
-        final String [] posters = {"Mohamed", "Ahmad", "Menna", "Amal", "Weam", "Soha", "Slim", "Hossam","Ayman","Wael"};
-        final Button commentButton = (Button)findViewById(R.id.commentButton);
-//        if(b!=null) {
-//            int j = (int) b.get("position");
-//            title.setText(titles[j]);
-//            text.setText(texts[j]);
-//            poster.setText("by "+posters[j]);
-//            String[] titleTitle = titles[j].split(" ");
-//            switch (titleTitle.length) {
-//                case 1:
-//                    setTitle(titles[j]);
-//                    break;
-//                case 2:
-//                    setTitle(titles[j]);
-//                    break;
-//                default:
-//                    setTitle(titleTitle[0]+" "+titleTitle[1]+" "+titleTitle[2]+"...");
-//                    break;
+//        final String[] texts={"Please ignore this it is a test post. Please ignore this it is a test post. " +
+//                "Please ignore this it is a test post. Please ignore this it is a test post. Please ignore this it is a test post." +
+//                " Please ignore this it is a test post. Please ignore this it is a test post.",
+//                "Please ignore this it is a test post. Please ignore this it is a test post. " +
+//                "Please ignore this it is a test post. Please ignore this it is a test post. Please ignore this it is a test post." +
+//                " Please ignore this it is a test post. Please ignore this it is a test post.",
+//                "Whoever made this app knows nothing about design, this is absolutely horrible. I can design better apps in my sleep.",
+//                "Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello " +
+//                        "Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello ",
+//                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
+//                        "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." +
+//                        " Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. ",
+//                "Please ignore this it is a test post. Please ignore this it is a test post. " +
+//                        "Please ignore this it is a test post. Please ignore this it is a test post. Please ignore this it is a test post." +
+//                        " Please ignore this it is a test post. Please ignore this it is a test post.",
+//                "Please ignore this it is a test post. Please ignore this it is a test post. " +
+//                        "Please ignore this it is a test post. Please ignore this it is a test post. Please ignore this it is a test post." +
+//                        " Please ignore this it is a test post. Please ignore this it is a test post.",
+//                "Whoever made this app knows nothing about design, this is absolutely horrible. I can design better apps in my sleep.",
+//                "Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello " +
+//                        "Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello ",
+//                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
+//                        "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." +
+//                        " Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. " +
+//                        "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."+
+//                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
+//                        "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." +
+//                        " Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. " +
+//                        "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."};
+//        final String [] posters = {"Mohamed", "Ahmad", "Menna", "Amal", "Weam", "Soha", "Slim", "Hossam","Ayman","Wael"};
+//        final Button commentButton = (Button)findViewById(R.id.commentButton);
+////        if(b!=null) {
+////            int j = (int) b.get("position");
+////            title.setText(titles[j]);
+////            text.setText(texts[j]);
+////            poster.setText("by "+posters[j]);
+////            String[] titleTitle = titles[j].split(" ");
+////            switch (titleTitle.length) {
+////                case 1:
+////                    setTitle(titles[j]);
+////                    break;
+////                case 2:
+////                    setTitle(titles[j]);
+////                    break;
+////                default:
+////                    setTitle(titleTitle[0]+" "+titleTitle[1]+" "+titleTitle[2]+"...");
+////                    break;
+////            }
+////        }
+//        commentButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                //COMMENT CODE using id 'commentText'
 //            }
-//        }
-        commentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //COMMENT CODE using id 'commentText'
-            }
-        });
+//        });
 
 
     }
@@ -289,6 +322,69 @@ public class PostActivity extends BaseActivity {
         new_post.setTitle(post.getTitle());
         return new_post;
     }
+    public static Application getApp(){return PostActivity.app;}
+    public static Context getContext(){return PostActivity.context;}
+    public static int getPost_id(){return PostActivity.post_id;}
 
+}
+class HttpPostComment extends AsyncTask<String, Void, Integer> {
+
+
+    @Override
+    protected Integer doInBackground(String... params) {
+        Comment comment = null;
+        Post postC = new Post();
+        int commentid = 0;
+        try {
+            String createPostUrl = "https://bachelor-sohaghareb.c9users.io/api/comments";
+            RestTemplate restTemplatePost = new RestTemplate();
+
+            restTemplatePost.getMessageConverters().add(new StringHttpMessageConverter());
+            StringBuilder builder = new StringBuilder();
+            for (String s : params) {
+                builder.append(s);
+            }
+            List<String> wordList = Arrays.asList(params);
+
+            comment = new Comment();
+            comment.setContent(wordList.get(0));
+            User poster = new User();
+            poster.setId(((MyApplication) PostActivity.getApp()).getCurrent_user());
+            comment.setUser(poster);
+            postC = new Post();
+            postC.setId(PostActivity.getPost_id());
+            comment.setPost(postC);
+
+
+            Gson gson = new Gson();
+            String request = gson.toJson(comment);
+            Log.v("HEY", request.toString());
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<String> entity = new HttpEntity<String>(request, headers);
+            Log.v("HUA", entity.toString());
+            ResponseEntity<String> response = restTemplatePost.postForEntity(createPostUrl, entity, String.class);
+            String restcall = response.getBody();
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject = new JSONObject(restcall);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+        } catch (RestClientException e) {
+            Log.e("POST", e.getLocalizedMessage());
+        }
+        return postC.getId();
+    }
+    protected void onPostExecute(Integer result) {
+        Intent intent = new Intent();
+        intent.setClass(PostActivity.getContext(), PostActivity.class);
+        intent.putExtra("post_id", result);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PostActivity.getContext().startActivity(intent);
+
+    }
 
 }
