@@ -305,7 +305,7 @@ public class MyProfileActivity extends BaseActivity{
                     new FollowPost().execute(new String[]{((MyApplication) MyProfileActivity.getApp()).getCurrent_user()+"", user_id+""});
                 }
                 else {
-                    //new UnfollowPost().execute(new String[]{((MyApplication) MyProfileActivity.getApp()).getCurrent_user()+"", user_id+""});
+                    new UnfollowPost().execute(new String[]{((MyApplication) MyProfileActivity.getApp()).getCurrent_user()+"", user_id+""});
                 }
             }
         });
@@ -636,6 +636,7 @@ class UnfollowPost extends AsyncTask<String, Void, Integer> {
             RestTemplate restTemplatePost = new RestTemplate();
 
             restTemplatePost.getMessageConverters().add(new StringHttpMessageConverter());
+            follow = new Follow();
             User follower = new User();
             follower.setId(Integer.parseInt(wordList.get(0)));
             User followee = new User();
