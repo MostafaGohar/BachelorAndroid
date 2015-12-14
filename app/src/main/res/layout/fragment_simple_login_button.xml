@@ -24,5 +24,17 @@
         android:layout_marginTop="30dp"
         android:layout_marginBottom="30dp" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go To Main Page"
+        android:id="@+id/main_button"
+        android:layout_above="@+id/text_details"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="43dp"
+        android:background="@color/colorPrimaryDark"
+        android:padding="10dp"
+        android:visibility="invisible" />
+
 </RelativeLayout>
 

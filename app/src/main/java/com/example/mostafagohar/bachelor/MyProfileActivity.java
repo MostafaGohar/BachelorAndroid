@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -31,6 +32,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.facebook.share.internal.ShareConstants;
+import com.facebook.share.model.ShareContent;
+import com.facebook.share.widget.ShareButton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -69,6 +73,10 @@ public class MyProfileActivity extends BaseActivity{
         context = getApplicationContext();
         app = getApplication();
         setContentView(R.layout.activity_myprofile);
+        ;
+        //ShareButton shareButton = (ShareButton)findViewById(R.id.fb_share_button);
+        //shareButton.setShareContent();
+
         final TextView email = (TextView)findViewById(R.id.ProfileEmail);
         final TextView gucid = (TextView)findViewById(R.id.ProfileGUCID);
         final TextView name = (TextView)findViewById(R.id.ProfileName);
@@ -415,6 +423,8 @@ public class MyProfileActivity extends BaseActivity{
         }
         return follow_id2;
     }
+
+
 
 }
 class HttpPost extends AsyncTask<String, Void, Integer> {

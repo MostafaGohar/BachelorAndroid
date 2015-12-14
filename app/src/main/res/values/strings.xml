@@ -13,7 +13,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="welcome">Welcome to Bachelor!</string>
+    <string name="welcome">Bachelor</string>
     <string name="title_activity_category">Categories</string>
     <string name="facebook_app_id">1500146460280124</string>
     <string name="hello_world">Hello world!</string>

@@ -7,8 +7,8 @@
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/my_profile" android:title="My Profile"
         android:orderInCategory="100" app:showAsAction="never" />
-    <item android:id="@+id/edit_profile" android:title="@string/edit_profile"
-        android:orderInCategory="100" app:showAsAction="never" />
+    <!--<item android:id="@+id/edit_profile" android:title="@string/edit_profile"-->
+        <!--android:orderInCategory="100" app:showAsAction="never" />-->
     <item android:id="@+id/settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/logout" android:title="@string/logout"

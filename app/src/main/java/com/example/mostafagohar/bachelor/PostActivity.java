@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
@@ -66,6 +68,7 @@ public class PostActivity extends BaseActivity {
         final TextView title = (TextView) findViewById(R.id.PostTitle);
         final TextView text = (TextView) findViewById(R.id.PostText);
         final TextView poster = (TextView) findViewById(R.id.poster);
+        final Button shareButton = (Button)findViewById(R.id.shareButton);
         final String[] titles={"This is a test postThis is a test postThis is a test postThis is a test postThis is a test postThis is a test postThis is a test postThis is a test postThis is a test postThis is a test post","This is also a test post","I don't like this app","Hello, is anyone there?",
                 "Lorem Ipsum","This is a test post","This is also a test post","I don't like this app","Hello, is anyone there?",
                 "Lorem Ipsum"};
@@ -193,69 +196,13 @@ public class PostActivity extends BaseActivity {
 
         queue.add(request);
 
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shareTextUrl("https://bachelor-sohaghareb.c9users.io/posts/"+post_id);
 
-        //final String[] commenters ={"Mohamed","Ahmed", "Amal", "Menna","Soha","Mostafa", "Wael", "Youssef","Slim","Weam","Ayman"};
-        //ListView commentsList = (ListView)findViewById(R.id.comment_list);
-        //ListView commentersList = (ListView)findViewById(R.id.commenter_list);
-        //commentsList.setAdapter(new ArrayAdapter<String>(PostActivity.this, android.R.layout.simple_list_item_1, comments));
-        //commentersList.setAdapter(new ArrayAdapter<String>(PostActivity.this, android.R.layout.simple_list_item_1, commenters));
-
-        //setListViewHeightBasedOnChildren(commentersList);
-//        final String[] texts={"Please ignore this it is a test post. Please ignore this it is a test post. " +
-//                "Please ignore this it is a test post. Please ignore this it is a test post. Please ignore this it is a test post." +
-//                " Please ignore this it is a test post. Please ignore this it is a test post.",
-//                "Please ignore this it is a test post. Please ignore this it is a test post. " +
-//                "Please ignore this it is a test post. Please ignore this it is a test post. Please ignore this it is a test post." +
-//                " Please ignore this it is a test post. Please ignore this it is a test post.",
-//                "Whoever made this app knows nothing about design, this is absolutely horrible. I can design better apps in my sleep.",
-//                "Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello " +
-//                        "Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello ",
-//                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
-//                        "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." +
-//                        " Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. ",
-//                "Please ignore this it is a test post. Please ignore this it is a test post. " +
-//                        "Please ignore this it is a test post. Please ignore this it is a test post. Please ignore this it is a test post." +
-//                        " Please ignore this it is a test post. Please ignore this it is a test post.",
-//                "Please ignore this it is a test post. Please ignore this it is a test post. " +
-//                        "Please ignore this it is a test post. Please ignore this it is a test post. Please ignore this it is a test post." +
-//                        " Please ignore this it is a test post. Please ignore this it is a test post.",
-//                "Whoever made this app knows nothing about design, this is absolutely horrible. I can design better apps in my sleep.",
-//                "Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello " +
-//                        "Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello Hello ",
-//                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
-//                        "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." +
-//                        " Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. " +
-//                        "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."+
-//                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
-//                        "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." +
-//                        " Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. " +
-//                        "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."};
-//        final String [] posters = {"Mohamed", "Ahmad", "Menna", "Amal", "Weam", "Soha", "Slim", "Hossam","Ayman","Wael"};
-//        final Button commentButton = (Button)findViewById(R.id.commentButton);
-////        if(b!=null) {
-////            int j = (int) b.get("position");
-////            title.setText(titles[j]);
-////            text.setText(texts[j]);
-////            poster.setText("by "+posters[j]);
-////            String[] titleTitle = titles[j].split(" ");
-////            switch (titleTitle.length) {
-////                case 1:
-////                    setTitle(titles[j]);
-////                    break;
-////                case 2:
-////                    setTitle(titles[j]);
-////                    break;
-////                default:
-////                    setTitle(titleTitle[0]+" "+titleTitle[1]+" "+titleTitle[2]+"...");
-////                    break;
-////            }
-////        }
-//        commentButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                //COMMENT CODE using id 'commentText'
-//            }
-//        });
+            }
+        });
 
 
     }
@@ -326,6 +273,18 @@ public class PostActivity extends BaseActivity {
     public static Context getContext(){return PostActivity.context;}
     public static int getPost_id(){return PostActivity.post_id;}
 
+
+    private void shareTextUrl(String WebUrl) {
+        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+        share.setType("text/plain");
+
+        // Add data to the intent, the receiving app will decide
+        // what to do with it.
+        share.putExtra(Intent.EXTRA_SUBJECT, "Title Of The Post");
+        share.putExtra(Intent.EXTRA_TEXT, WebUrl);
+
+        startActivity(Intent.createChooser(share, "Share link!"));
+    }
 }
 class HttpPostComment extends AsyncTask<String, Void, Integer> {
 

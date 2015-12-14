@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
@@ -48,10 +49,14 @@ public class FragmentSimpleLoginButton extends Fragment {
     private CallbackManager mCallbackManager;
     private AccessTokenTracker mTokenTracker;
     private ProfileTracker mProfileTracker;
+    private Button mMainButton;
+    private LoginButton mButtonLogin;
     static Context context;
+
     private FacebookCallback<LoginResult> mFacebookCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
+
             Log.d("VIVZ", "onSuccess");
             AccessToken accessToken = loginResult.getAccessToken();
             profile = Profile.getCurrentProfile();
@@ -85,6 +90,8 @@ public class FragmentSimpleLoginButton extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         context = getContext();
 
@@ -94,12 +101,14 @@ public class FragmentSimpleLoginButton extends Fragment {
 
         mTokenTracker.startTracking();
         mProfileTracker.startTracking();
+
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         return inflater.inflate(R.layout.fragment_simple_login_button, container, false);
     }
 
@@ -107,16 +116,27 @@ public class FragmentSimpleLoginButton extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         setupTextDetails(view);
         setupLoginButton(view);
+        setupMainButton(view);
     }
 
-    /*@Override
+    @Override
     public void onResume() {
+
         super.onResume();
-        Profile profile = Profile.getCurrentProfile();
-        LoginWithFacebook(profile);
-        //mTextDetails.setText(constructWelcomeMessage(profile));
+//        if(mButtonLogin.getText().toString().equals("Log in with Facebook")){
+//            mMainButton.setVisibility(View.INVISIBLE);
+//        }else{
+//            mMainButton.setVisibility(View.VISIBLE);
+//        }
+
+//        final Button mainButton
+        //profile = Profile.getCurrentProfile();
+       // new CheckLogin().execute(new String[]{profile.getId()});
+        //Profile profile = Profile.getCurrentProfile();
+        //LoginWithFacebook(profile);
+        mTextDetails.setText(constructWelcomeMessage(profile));
     }
-*/
+
     private void LoginWithFacebook(Profile profile) {
         String pic_url = "http://graph.facebook.com/"+profile.getId()+"/picture";
         User user = new User();
@@ -136,12 +156,17 @@ public class FragmentSimpleLoginButton extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         super.onActivityResult(requestCode, resultCode, data);
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     private void setupTextDetails(View view) {
         mTextDetails = (TextView) view.findViewById(R.id.text_details);
+    }
+
+    private void setupMainButton(View view) {
+        mMainButton = (Button) view.findViewById(R.id.main_button);
     }
 
     private void setupTokenTracker() {
@@ -164,7 +189,8 @@ public class FragmentSimpleLoginButton extends Fragment {
     }
 
     private void setupLoginButton(View view) {
-        LoginButton mButtonLogin = (LoginButton) view.findViewById(R.id.login_button);
+
+        mButtonLogin = (LoginButton) view.findViewById(R.id.login_button);
         mButtonLogin.setFragment(this);
         mButtonLogin.setReadPermissions("user_friends");
         mButtonLogin.registerCallback(mCallbackManager, mFacebookCallback);
@@ -173,7 +199,7 @@ public class FragmentSimpleLoginButton extends Fragment {
     private String constructWelcomeMessage(Profile profile) {
         StringBuffer stringBuffer = new StringBuffer();
         if (profile != null) {
-            stringBuffer.append("Welcome " + profile.getId());
+            stringBuffer.append("Welcome " + profile.getName());
         }
         return stringBuffer.toString();
     }

@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
 
 public class FacebookHelper extends ActionBarActivity {
@@ -19,6 +20,7 @@ public class FacebookHelper extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         context  = getApplicationContext();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.facebookhelper);

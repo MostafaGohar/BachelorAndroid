@@ -36,10 +36,10 @@ public class BaseActivity extends AppCompatActivity {
                 Intent logoutIntent = new Intent(getApplicationContext(), FacebookHelper.class);
                 startActivity(logoutIntent);
                 return true;
-            case R.id.edit_profile:
-                Intent editprofileIntent = new Intent(getApplicationContext(), EditProfile.class);
-                startActivity(editprofileIntent);
-                return true;
+//            case R.id.edit_profile:
+//                Intent editprofileIntent = new Intent(getApplicationContext(), EditProfile.class);
+//                startActivity(editprofileIntent);
+//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
