@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  type: false
+  email: MyString
+  gucid: MyString
+  fname: MyString
+  lname: MyString
+  dob: 2015-11-10
+  gender: false
+  location: MyString
+  topic_id: 
+
+two:
+  type: false
+  email: MyString
+  gucid: MyString
+  fname: MyString
+  lname: MyString
+  dob: 2015-11-10
+  gender: false
+  location: MyString
+  topic_id: 

@@ -1,0 +1,49 @@
+<%if @can==1%>
+  <% @post = Post.new %>
+  <%= form_for @post , :url => posts_path(destid: @category.id,desttype:1)  do |ff| %>
+	  <div class="field">
+	    <%= ff.label :content %><br />
+	    <%= ff.text_field :content %>
+	  </div>
+	  <div class="actions">
+	    <%= ff.submit %>
+	  </div>
+
+<%end%>
+<br>
+<%end%>
+
+<table>
+  <tr>
+    <th>Content</th>
+    <th>Created at</th>
+    
+  </tr>
+
+<% @posts.each do |post| %>
+  <tr>
+    <td><%= post.content %></td>
+    <td><%= post.created_at %></td>
+  </tr>
+  <tr><%post.comments.each do |comment|%>
+  <td><%=comment.content%></td>
+  </tr>
+  <%end%>
+  <%if @can==1%>
+    <% @comment = Comment.new %>
+      <%= form_for @comment , :url => comments_path(post_id: post.id)  do |f| %>
+      <div class="field">
+      <%= f.hidden_field :post_id, :value => @post.id %>
+        <%= f.label :comment %><br />
+        <%= f.text_field :content %>
+      </div>
+      <div class="actions">
+        <%= f.submit %>
+      </div>
+
+  <%end%>
+<%end%>
+<% end %>
+</table>
+ 
+<br />

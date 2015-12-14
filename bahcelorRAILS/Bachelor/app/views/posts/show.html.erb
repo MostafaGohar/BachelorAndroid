@@ -1,0 +1,17 @@
+<h3>
+<%=@post.content %>
+</h3>
+<% @comment = Comment.new %>
+	<%= form_for @comment , :url => comments_path(post_id: @post.id)  do |f| %>
+	<div class="field">
+	<%= f.hidden_field :post_id, :value => @post.id %>
+    <%= f.label :comment %><br />
+    <%= f.text_field :content %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+
+<%end%>
+
+
