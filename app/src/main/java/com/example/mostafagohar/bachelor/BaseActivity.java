@@ -33,7 +33,7 @@ public class BaseActivity extends AppCompatActivity {
                 startActivity(settingsIntent);
                 return true;
             case R.id.logout:
-                Intent logoutIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                Intent logoutIntent = new Intent(getApplicationContext(), FacebookHelper.class);
                 startActivity(logoutIntent);
                 return true;
             case R.id.edit_profile:

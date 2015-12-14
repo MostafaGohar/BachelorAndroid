@@ -114,7 +114,8 @@ public class ExtraInfo extends AppCompatActivity {
                     gender = 0;
                 if(check == 0){
                     new LoginPost().execute(new String[]{profile.getId(), profile.getFirstName(), profile.getLastName(), gucemail.getText().toString(),
-                            gucid.getText().toString(), dob.getDayOfMonth() + "/" + (dob.getMonth() + 1) + "/" + dob.getYear(), gender + "", location.getText().toString()});
+                            gucid.getText().toString(), dob.getDayOfMonth() + "/" + (dob.getMonth() + 1) + "/" + dob.getYear(), gender + "",
+                            location.getText().toString(),profile.getId()});
 
                 }
             }
@@ -142,7 +143,7 @@ class LoginPost extends AsyncTask<String, Void, String> {
             }
             List<String> wordList = Arrays.asList(params);
             user = new User();
-            Log.v("DATE",wordList.get(5));
+            Log.v("DATE", wordList.get(5));
             user.setUid(wordList.get(0));
             user.setFname(wordList.get(1));
             user.setLname(wordList.get(2));
@@ -154,7 +155,9 @@ class LoginPost extends AsyncTask<String, Void, String> {
             else
                 user.setGender(false);
             user.setLocation(wordList.get(7));
-
+            Log.v("PIC", wordList.get(8));
+            user.setAvatar("https://graph.facebook.com/" + wordList.get(8) + "/picture?type=large");
+            Log.v("GTE",user.getAvatar());
             Gson gson = new Gson();
             String request = gson.toJson(user);
             Log.v("HEY", request.toString());

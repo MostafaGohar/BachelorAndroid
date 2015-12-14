@@ -37,7 +37,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Followees"
+            android:text="Following"
             android:id="@+id/followeesButton"
             android:layout_weight="0.33"
             android:background="#CCC" />
@@ -65,7 +65,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="38dp"
+                android:layout_height="39dp"
                 android:layout_alignParentBottom="true"
                 android:weightSum="1"
                 android:padding="5dp">
@@ -83,7 +83,20 @@
                     android:background="#9D9" />
             </LinearLayout>
 
-    <LinearLayout
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:weightSum="1"
+                android:padding="10dp">
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:id="@+id/profile_pic" />
+            </LinearLayout>
+
+            <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

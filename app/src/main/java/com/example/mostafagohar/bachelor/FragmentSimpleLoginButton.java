@@ -2,6 +2,7 @@ package com.example.mostafagohar.bachelor;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -33,6 +34,7 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
@@ -54,6 +56,7 @@ public class FragmentSimpleLoginButton extends Fragment {
             AccessToken accessToken = loginResult.getAccessToken();
             profile = Profile.getCurrentProfile();
             mTextDetails.setText(profile.getId());
+            //Uri uri = profile.getProfilePictureUri(80, 80);
 
 
             new CheckLogin().execute(new String[]{profile.getId()});
@@ -115,10 +118,12 @@ public class FragmentSimpleLoginButton extends Fragment {
     }
 */
     private void LoginWithFacebook(Profile profile) {
+        String pic_url = "http://graph.facebook.com/"+profile.getId()+"/picture";
         User user = new User();
         user.setFname(profile.getFirstName());
         user.setLname(profile.getLastName());
         user.setUid(profile.getId());
+        user.setAvatar(pic_url);
 
     }
 

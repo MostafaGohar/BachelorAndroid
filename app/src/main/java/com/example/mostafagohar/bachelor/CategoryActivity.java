@@ -66,7 +66,7 @@ public class CategoryActivity extends BaseActivity {
                 "Lorem Ipsum","This is a test post","This is also a test post","I don't like this app","Hello, is anyone there?",
                 "Lorem Ipsum"};
 //        ArrayList image_details = getListData();
-          final ListView lv1 = (ListView) findViewById(R.id.CategoryPosts);
+
 //        lv1.setAdapter(new CustomListAdapter(this, image_details));
 
         Intent categoryIntent= getIntent();
@@ -87,25 +87,25 @@ public class CategoryActivity extends BaseActivity {
                     Category category = gson.fromJson(data,Category.class);
                     Log.v("NAME", ""+category.getId());
                     setTitle(category.getName());
-                    String data2 = response.getJSONObject("category").getJSONArray("posts").toString();
-                    final ArrayList < Post > list = gson.fromJson(data2, new TypeToken<ArrayList<Post>>() {}.getType());
-                    final ArrayList<Object> results = new ArrayList<>();
-                    Post postData = new Post();
-                    for(int i = 0;i<list.size();i++){
-                        postData.setContent(list.get(i).getContent());
-                        postData.setCreated_at(list.get(i).getCreated_at());
-                        postData.setUser(list.get(i).getUser());
-                        results.add(PostActivity.clonePost(postData));
-                    }
-                    lv1.setAdapter(new CustomListAdapter(getApplicationContext(), results));
-                    lv1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
-                            Intent intent = new Intent(getApplicationContext(), PostActivity.class);
-                            intent.putExtra("post_id", list.get(position).getId());//(Post)results.get(position));
-                            startActivity(intent);
-                        }
-                    });
+//                    String data2 = response.getJSONObject("category").getJSONArray("posts").toString();
+//                    final ArrayList < Post > list = gson.fromJson(data2, new TypeToken<ArrayList<Post>>() {}.getType());
+//                    final ArrayList<Object> results = new ArrayList<>();
+//                    Post postData = new Post();
+//                    for(int i = 0;i<list.size();i++){
+//                        postData.setContent(list.get(i).getContent());
+//                        postData.setCreated_at(list.get(i).getCreated_at());
+//                        postData.setUser(list.get(i).getUser());
+//                        results.add(PostActivity.clonePost(postData));
+//                    }
+//                    lv1.setAdapter(new CustomListAdapter(getApplicationContext(), results));
+//                    lv1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                        @Override
+//                        public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
+//                            Intent intent = new Intent(getApplicationContext(), PostActivity.class);
+//                            intent.putExtra("post_id", list.get(position).getId());//(Post)results.get(position));
+//                            startActivity(intent);
+//                        }
+//                    });
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -127,6 +127,57 @@ public class CategoryActivity extends BaseActivity {
             }
         };
         queue.add(posts_request);
+
+        ////////////////////////////////
+
+        String posts_url2="https://bachelor-sohaghareb.c9users.io/api/categories/posts/"+category_id;
+        JsonArrayRequest request=new JsonArrayRequest(Request.Method.GET, posts_url2, "", new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                try {
+                    String data= response.toString();
+                    Gson gson=new Gson();
+                    final ArrayList < Post > list = gson.fromJson(data, new TypeToken<ArrayList<Post>>() {}.getType());
+                    JSONObject x = (JSONObject) response.get(0);
+                    final ArrayList<Object> results = new ArrayList<>();
+                    Post postData = new Post();
+                    for(int i = 0;i<list.size();i++){
+                        postData.setContent(list.get(i).getContent());
+                        postData.setTitle(list.get(i).getTitle());
+                        postData.setCreated_at(list.get(i).getCreated_at());
+                        postData.setUser(list.get(i).getUser());
+                        results.add(PostActivity.clonePost(postData));
+                    }
+                    final ListView lv1 = (ListView) findViewById(R.id.CategoryPosts);
+                    lv1.setAdapter(new CustomListAdapter(getApplicationContext(), results));
+                    lv1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
+                            Intent intent = new Intent(getApplicationContext(), PostActivity.class);
+                            intent.putExtra("post_id", list.get(position).getId());//(Post)results.get(position));
+                            startActivity(intent);
+                        }
+                    });
+                    PostActivity.setListViewHeightBasedOnChildren(lv1);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(CategoryActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String,String> map=new HashMap<String, String>();
+                map.put("Accept","application/json");
+                return map;
+            }
+        };
+        queue.add(request);
+        /////////////////////////////
 
         final Button postButton = (Button)findViewById(R.id.postButton);
         postButton.setOnClickListener(new View.OnClickListener() {
